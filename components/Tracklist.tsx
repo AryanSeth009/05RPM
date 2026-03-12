@@ -85,16 +85,16 @@ export default function Tracklist() {
                                 </p>
                             </div>
                             <div className="relative flex flex-wrap items-center gap-3 pt-6 border-t border-black/5">
-                                <span className="text-[9px] font-bold uppercase tracking-widest py-1 border-b border-cherry/20 text-muted group-hover:text-cherry group-hover:border-cherry/40 transition-colors">Brand Identity</span>
-                                <span className="text-[9px] font-bold uppercase tracking-widest py-1 border-b border-cherry/20 text-muted group-hover:text-cherry group-hover:border-cherry/40 transition-colors">Web Design</span>
+                                <span className="px-3 py-1.5 rounded-full border border-cherry/20 bg-cherry/[0.03] text-[9px] font-bold uppercase tracking-widest text-cherry hover:bg-cherry hover:text-white cursor-pointer transition-colors duration-300">Brand Identity</span>
+                                <span className="px-3 py-1.5 rounded-full border border-cherry/20 bg-cherry/[0.03] text-[9px] font-bold uppercase tracking-widest text-cherry hover:bg-cherry hover:text-white cursor-pointer transition-colors duration-300">Web Design</span>
                             </div>
                         </div>
                         <div className="relative bg-ink/[0.01] flex items-center justify-center overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-l-0 gatefold-shadow-reverse border-t-0 lg:border-t p-8">
                             <div className="absolute inset-0 paper-texture opacity-30 pointer-events-none mix-blend-multiply"></div>
                             <div className="vinyl-reveal w-full flex justify-center lg:justify-end lg:pr-8">
                                 {/* Wrapped existing Vinyl to use hover animation classes */}
-                                <div className="vinyl-spin-hover relative flex items-center justify-center pointer-events-none group-hover:scale-105 transition-transform duration-700">
-                                   <Vinyl size={280} className="w-[200px] h-[200px] md:w-[280px] md:h-[280px] opacity-90 shadow-2xl drop-shadow-2xl" speed={10} />
+                                <div className="relative flex items-center justify-center pointer-events-none group-hover:scale-105 transition-transform duration-700">
+                                   <Vinyl size={280} className="w-[200px] h-[200px] md:w-[280px] md:h-[280px] opacity-90 shadow-2xl drop-shadow-2xl" speed={10} spinClass="vinyl-spin-hover" />
                                 </div>
                             </div>
                         </div>
@@ -125,8 +125,8 @@ export default function Tracklist() {
                                 </p>
                             </div>
                             <div className="relative flex flex-wrap items-center gap-3 pt-6 border-t border-black/5">
-                                <span className="text-[9px] font-bold uppercase tracking-widest py-1 border-b border-cherry/20 text-muted group-hover:text-cherry group-hover:border-cherry/40 transition-colors">Landing Pages</span>
-                                <span className="text-[9px] font-bold uppercase tracking-widest py-1 border-b border-cherry/20 text-muted group-hover:text-cherry group-hover:border-cherry/40 transition-colors">UI/UX</span>
+                                <span className="px-3 py-1.5 rounded-full border border-cherry/20 bg-cherry/[0.03] text-[9px] font-bold uppercase tracking-widest text-cherry hover:bg-cherry hover:text-white cursor-pointer transition-colors duration-300">Landing Pages</span>
+                                <span className="px-3 py-1.5 rounded-full border border-cherry/20 bg-cherry/[0.03] text-[9px] font-bold uppercase tracking-widest text-cherry hover:bg-cherry hover:text-white cursor-pointer transition-colors duration-300">UI/UX</span>
                             </div>
                         </div>
                         <div className="relative bg-ink/[0.01] flex items-center justify-center overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-r-0 gatefold-shadow border-t-0 p-8 lg:order-1 lg:border-t">
@@ -138,8 +138,8 @@ export default function Tracklist() {
                                        .vinyl-reveal[style*="translateX(40%)"] { transform: translateX(0%) !important; }
                                     }
                                  `}}/>
-                                <div className="vinyl-spin-hover relative flex items-center justify-center pointer-events-none group-hover:scale-105 transition-transform duration-700">
-                                   <Vinyl size={280} className="w-[200px] h-[200px] md:w-[280px] md:h-[280px] opacity-90 shadow-2xl drop-shadow-2xl" speed={16} />
+                                <div className="relative flex items-center justify-center pointer-events-none group-hover:scale-105 transition-transform duration-700">
+                                   <Vinyl size={280} className="w-[200px] h-[200px] md:w-[280px] md:h-[280px] opacity-90 shadow-2xl drop-shadow-2xl" speed={16} spinClass="vinyl-spin-hover" />
                                 </div>
                             </div>
                         </div>
@@ -170,15 +170,15 @@ export default function Tracklist() {
                                 </p>
                             </div>
                             <div className="relative flex flex-wrap items-center gap-3 pt-6 border-t border-black/5">
-                                <span className="text-[9px] font-bold uppercase tracking-widest py-1 border-b border-cherry/20 text-muted group-hover:text-cherry group-hover:border-cherry/40 transition-colors">Full-Stack Dev</span>
-                                <span className="text-[9px] font-bold uppercase tracking-widest py-1 border-b border-cherry/20 text-muted group-hover:text-cherry group-hover:border-cherry/40 transition-colors">Product Design</span>
+                                <span className="px-3 py-1.5 rounded-full border border-cherry/20 bg-cherry/[0.03] text-[9px] font-bold uppercase tracking-widest text-cherry hover:bg-cherry hover:text-white cursor-pointer transition-colors duration-300">Full-Stack Dev</span>
+                                <span className="px-3 py-1.5 rounded-full border border-cherry/20 bg-cherry/[0.03] text-[9px] font-bold uppercase tracking-widest text-cherry hover:bg-cherry hover:text-white cursor-pointer transition-colors duration-300">Product Design</span>
                             </div>
                         </div>
                         <div className="relative bg-ink/[0.01] flex items-center justify-center overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-l-0 gatefold-shadow-reverse border-t-0 p-8 lg:border-t">
                             <div className="absolute inset-0 paper-texture opacity-30 pointer-events-none mix-blend-multiply"></div>
                             <div className="vinyl-reveal w-full flex justify-center lg:justify-end lg:pr-8">
-                                <div className="vinyl-spin-hover relative flex items-center justify-center pointer-events-none group-hover:scale-105 transition-transform duration-700">
-                                   <Vinyl size={280} className="w-[200px] h-[200px] md:w-[280px] md:h-[280px] opacity-90 shadow-2xl drop-shadow-2xl" speed={12} />
+                                <div className="relative flex items-center justify-center pointer-events-none group-hover:scale-105 transition-transform duration-700">
+                                   <Vinyl size={280} className="w-[200px] h-[200px] md:w-[280px] md:h-[280px] opacity-90 shadow-2xl drop-shadow-2xl" speed={12} spinClass="vinyl-spin-hover" />
                                 </div>
                             </div>
                         </div>
