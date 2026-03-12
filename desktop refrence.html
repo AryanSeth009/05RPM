@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>05RPM — Built at Our Own Frequency</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#EFE6DE',
+            cherry: '#9A0002',
+            ink: '#1A1210',
+            muted: '#8A7B72',
+          },
+          fontFamily: {
+            serif: ['Cormorant Garamond', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="animations">
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes float { 
+      0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); } 
+      50% { transform: translateY(-12px) rotate(var(--rot, 0deg)); } 
+    }
+    @keyframes eqBounce { from { transform: scaleY(1); } to { transform: scaleY(0.2); } }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .spin { animation: spin 8s linear infinite; }
+    .spin-slow { animation: spin 20s linear infinite; }
+    .float-el { animation: float 4.5s ease-in-out infinite; }
+    .marquee-go { animation: marquee 30s linear infinite; }
+    .eq span { animation: eqBounce 0.7s ease-in-out infinite alternate; transform-origin: bottom; }
+  </style>
+<style data-purpose="custom-components">
+    body { background: #EFE6DE; color: #1A1210; cursor: none; }
+    #cur { width: 10px; height: 10px; background: #9A0002; border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
+    #cur2 { width: 32px; height: 32px; border: 1.5px solid rgba(154, 0, 2, 0.3); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: all 0.2s ease-out; }
+
+    /* Custom Vinyl Component */
+    .vinyl {
+      border-radius: 50%;
+      background: radial-gradient(circle, #2a1a18 0%, #2a1a18 19%, #1a1210 20%, #1a1210 22%, #222 23%, #111 28%, #1a1210 30%, #1a1210 35%, #222 36%, #111 42%, #1a1210 44%, #1a1210 50%, #222 52%, #111 100%);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      position: relative;
+    }
+    .vinyl::after {
+      content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 22%; height: 22%; border-radius: 50%; background: #9A0002;
+    }
+
+    /* Cassette Component */
+    .cass {
+      background: #FDFAF6; border-radius: 4px; border: 1px solid rgba(26, 18, 16, 0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative;
+    }
+    .cass-label {
+      position: absolute; bottom: 12%; left: 10%; right: 10%; height: 18%;
+      background: #9A0002; border-radius: 1px; color: #fff; font-size: 6px;
+      display: flex; align-items: center; justify-content: center; font-weight: 700;
+    }
+
+    /* CSS Icons for Process */
+    .icon-card {
+      width: 80px; height: 80px; background: rgba(154, 0, 2, 0.05);
+      border: 1px solid rgba(154, 0, 2, 0.1); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .ic-headphone { width: 40px; height: 36px; border: 3px solid #9A0002; border-bottom: 0; border-radius: 20px 20px 0 0; position: relative; }
+    .ic-headphone::after { content: ''; position: absolute; bottom: -4px; left: -6px; width: 12px; height: 16px; background: #9A0002; border-radius: 4px; box-shadow: 40px 0 0 #9A0002; }
+    
+    .ic-fader { display: flex; gap: 6px; height: 36px; align-items: center; }
+    .fader-track { width: 3px; height: 100%; background: rgba(154, 0, 2, 0.15); position: relative; border-radius: 2px; }
+    .fader-knob { position: absolute; left: -4px; width: 11px; height: 6px; background: #9A0002; border-radius: 2px; }
+
+    /* Interaction & Reveal */
+    .fi { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .fi.on { opacity: 1; transform: translateY(0); }
+    .nav-link { position: relative; }
+    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1.5px; background: #9A0002; transition: width 0.3s; }
+    .nav-link:hover::after { width: 100%; }
+    
+    .track-card:hover { background: rgba(154, 0, 2, 0.02); }
+  </style>
+</head>
+<body class="selection:bg-cherry selection:text-white overflow-x-hidden">
+<!-- BEGIN: Cursor -->
+<div id="cur"></div>
+<div id="cur2"></div>
+<!-- END: Cursor -->
+<!-- BEGIN: Navigation -->
+<nav class="fixed top-0 left-0 right-0 z-[100] bg-cream/80 backdrop-blur-md border-b border-black/5 px-16 py-6 flex justify-between items-center">
+<a class="font-sans font-bold text-[22px] tracking-tight leading-none text-ink" href="#">
+      05<span class="text-cherry">RPM</span>
+</a>
+<ul class="flex gap-12">
+<li><a class="nav-link text-[11px] uppercase tracking-[0.2em] font-bold text-muted hover:text-cherry transition-colors" href="#tracklist">Tracklist</a></li>
+<li><a class="nav-link text-[11px] uppercase tracking-[0.2em] font-bold text-muted hover:text-cherry transition-colors" href="#process">Process</a></li>
+<li><a class="nav-link text-[11px] uppercase tracking-[0.2em] font-bold text-muted hover:text-cherry transition-colors" href="#contact">Let's Play</a></li>
+</ul>
+</nav>
+<!-- END: Navigation -->
+<!-- BEGIN: Hero Section -->
+<section class="min-h-screen pt-32 pb-20 px-16 flex items-center">
+<div class="max-w-screen-xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+<div class="fi">
+<div class="flex items-center gap-4 text-cherry text-[11px] uppercase tracking-[0.3em] font-bold mb-8">
+<span class="w-8 h-[1.5px] bg-cherry"></span>
+          Nagpur, India — Est. 2024
+        </div>
+<h1 class="font-serif font-bold leading-[0.95] text-ink mb-8" style="font-size: clamp(64px, 7vw, 100px);">
+          You deserve<br/>more than<br/><em class="italic text-cherry">background<br/>noise.</em>
+</h1>
+<p class="text-muted text-lg max-w-md mb-2 leading-relaxed">
+          Most agencies stream forgettable work. We press records — the kind worth flipping to Side B.
+        </p>
+<p class="text-cherry italic text-sm mb-12 font-medium">Not talking about music, btw.</p>
+<a class="inline-flex items-center gap-4 bg-cherry text-white px-10 py-5 text-[12px] font-bold uppercase tracking-[0.2em] hover:bg-ink transition-all transform hover:-translate-y-1" href="#contact">
+          Drop the needle <span>→</span>
+</a>
+</div>
+<!-- Hero Visual -->
+<div class="relative flex justify-center items-center h-[500px]">
+<!-- Main Vinyl -->
+<div class="vinyl spin w-[380px] h-[380px] z-10">
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-serif text-white font-bold text-[8px] tracking-widest z-20">05RPM</span>
+</div>
+</div>
+<!-- Tonearm -->
+<div class="absolute top-[60px] right-[40px] w-32 h-2 bg-gradient-to-r from-neutral-300 via-neutral-100 to-neutral-400 rounded-full rotate-[-25deg] origin-right shadow-lg z-20">
+<div class="absolute -left-1 -top-1 w-6 h-4 bg-cherry rounded-sm"></div>
+</div>
+<!-- Floaters -->
+<div class="cass float-el absolute top-10 left-10 w-20 h-12" style="--rot: -10deg; animation-delay: 0.5s;">
+<div class="cass-label uppercase">05RPM</div>
+</div>
+<div class="vinyl spin absolute bottom-10 left-5 w-16 h-16 opacity-40" style="animation-duration: 12s;"></div>
+<div class="absolute bottom-20 right-10 text-cherry/20 font-serif text-5xl float-el" style="--rot: 15deg;">♪</div>
+</div>
+</div>
+</section>
+<!-- END: Hero Section -->
+<!-- BEGIN: Marquee -->
+<div class="bg-cherry py-4 overflow-hidden whitespace-nowrap border-y border-cherry">
+<div class="marquee-go flex items-center">
+<div class="flex items-center gap-12 px-6">
+<span class="text-white text-[11px] uppercase font-bold tracking-[0.3em]">Side A — Launch</span><span class="text-white/30">•</span>
+<span class="text-white text-[11px] uppercase font-bold tracking-[0.3em]">Side B — Grow</span><span class="text-white/30">•</span>
+<span class="text-white text-[11px] uppercase font-bold tracking-[0.3em]">Repress — Transform</span><span class="text-white/30">•</span>
+<span class="text-white text-[11px] uppercase font-bold tracking-[0.3em]">Five Voices. One Frequency.</span><span class="text-white/30">•</span>
+</div>
+<div class="flex items-center gap-12 px-6">
+<span class="text-white text-[11px] uppercase font-bold tracking-[0.3em]">Side A — Launch</span><span class="text-white/30">•</span>
+<span class="text-white text-[11px] uppercase font-bold tracking-[0.3em]">Side B — Grow</span><span class="text-white/30">•</span>
+<span class="text-white text-[11px] uppercase font-bold tracking-[0.3em]">Repress — Transform</span><span class="text-white/30">•</span>
+<span class="text-white text-[11px] uppercase font-bold tracking-[0.3em]">Five Voices. One Frequency.</span><span class="text-white/30">•</span>
+</div>
+</div>
+</div>
+<!-- END: Marquee -->
+<!-- BEGIN: Why Us Section -->
+<section class="py-32 px-16 border-b border-black/5">
+<div class="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+<div class="fi">
+<div class="flex items-center gap-4 text-cherry text-[11px] uppercase tracking-[0.3em] font-bold mb-6">
+<span class="w-8 h-[1.5px] bg-cherry"></span>
+          Why 05RPM
+        </div>
+<h2 class="font-serif font-bold leading-tight text-ink mb-8" style="font-size: clamp(48px, 5vw, 72px);">
+          We don't make<br/><em class="italic text-cherry">playlist filler.</em>
+</h2>
+<p class="text-muted text-lg leading-relaxed mb-6">
+          Fast agencies sound the same. <strong class="text-ink font-bold">We move at our own speed</strong> — deliberately, intentionally — and when the work plays, you notice.
+        </p>
+<p class="text-muted text-lg leading-relaxed">
+          Five students. Zero templates. <strong class="text-ink font-bold">One standard we actually keep.</strong>
+</p>
+</div>
+<div class="fi relative flex justify-center items-center h-[400px]">
+<!-- Ghost Note -->
+<div class="absolute font-serif text-cherry/5 text-[280px] pointer-events-none">♬</div>
+<!-- Cluster -->
+<div class="vinyl spin w-[200px] h-[200px] z-10" style="animation-duration: 10s;"></div>
+<div class="cass float-el absolute top-4 left-10 w-20 h-12" style="--rot: -8deg; animation-delay: 1s;">
+<div class="cass-label">05RPM</div>
+</div>
+<div class="absolute bottom-8 right-12 w-16 h-16 bg-cherry/10 border border-cherry/20 rounded-md rotate-12 flex items-center justify-center float-el" style="--rot: 12deg;">
+<div class="vinyl spin w-10 h-10 opacity-60"></div>
+</div>
+<div class="eq flex gap-1 absolute bottom-12 left-16 float-el" style="--rot: 0deg;">
+<span class="w-1.5 h-8 bg-cherry/40 rounded-t-sm" style="animation-delay: 0.1s;"></span>
+<span class="w-1.5 h-12 bg-cherry/40 rounded-t-sm" style="animation-delay: 0.3s;"></span>
+<span class="w-1.5 h-6 bg-cherry/40 rounded-t-sm" style="animation-delay: 0.2s;"></span>
+<span class="w-1.5 h-10 bg-cherry/40 rounded-t-sm" style="animation-delay: 0.4s;"></span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Why Us Section -->
+<!-- BEGIN: Tracklist Section -->
+<section class="py-32 px-16 relative" id="tracklist">
+<div class="absolute top-40 left-1/2 -translate-x-1/2 font-serif text-cherry/[0.03] text-[400px] pointer-events-none select-none">♬</div>
+<div class="max-w-screen-xl mx-auto">
+<div class="fi flex justify-between items-end mb-20">
+<div class="max-w-xl">
+<div class="flex items-center gap-4 text-cherry text-[11px] uppercase tracking-[0.3em] font-bold mb-6">
+<span class="w-8 h-[1.5px] bg-cherry"></span>
+            Our Services
+          </div>
+<h2 class="font-serif font-bold text-ink leading-none" style="font-size: clamp(48px, 6vw, 84px);">
+            The <em class="italic text-cherry">Tracklist</em>
+</h2>
+</div>
+<p class="text-muted max-w-xs text-right mb-2">Every service we offer, pressed with full intent. Pick your track.</p>
+</div>
+<div class="border-t border-black/10">
+<!-- Track 01 -->
+<div class="track-card fi group grid grid-cols-[80px_1fr_120px] items-center border-b border-black/10 transition-colors">
+<div class="font-serif text-cherry/10 text-6xl font-light py-12 pl-4">01</div>
+<div class="px-12 py-12 border-x border-black/5">
+<div class="flex items-center gap-3 text-cherry text-[10px] font-bold uppercase tracking-widest mb-4">
+              Side A <div class="eq flex gap-0.5 h-3"><span class="w-0.5 bg-cherry"></span><span class="w-0.5 bg-cherry"></span><span class="w-0.5 bg-cherry"></span></div>
+</div>
+<h3 class="font-serif font-bold text-4xl text-ink group-hover:text-cherry transition-colors mb-4 italic">The Launch</h3>
+<p class="text-muted max-w-xl mb-6">Your first pressing. Enter the market with a sound people actually remember.</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 border border-black/10 text-[10px] uppercase font-bold text-muted group-hover:border-cherry/30 group-hover:text-cherry">Brand Identity</span>
+<span class="px-3 py-1 border border-black/10 text-[10px] uppercase font-bold text-muted group-hover:border-cherry/30 group-hover:text-cherry">Web Design</span>
+</div>
+</div>
+<div class="flex justify-center opacity-20 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-700">
+<div class="vinyl spin w-24 h-24"></div>
+</div>
+</div>
+<!-- Track 02 -->
+<div class="track-card fi group grid grid-cols-[80px_1fr_120px] items-center border-b border-black/10 transition-colors">
+<div class="font-serif text-cherry/10 text-6xl font-light py-12 pl-4">02</div>
+<div class="px-12 py-12 border-x border-black/5">
+<div class="flex items-center gap-3 text-cherry text-[10px] font-bold uppercase tracking-widest mb-4">
+              Side A <div class="eq flex gap-0.5 h-3"><span class="w-0.5 bg-cherry"></span><span class="w-0.5 bg-cherry"></span><span class="w-0.5 bg-cherry"></span></div>
+</div>
+<h3 class="font-serif font-bold text-4xl text-ink group-hover:text-cherry transition-colors mb-4 italic">The Single</h3>
+<p class="text-muted max-w-xl mb-6">One problem. One sharp solution. No full-album commitment needed.</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 border border-black/10 text-[10px] uppercase font-bold text-muted group-hover:border-cherry/30 group-hover:text-cherry">Landing Pages</span>
+<span class="px-3 py-1 border border-black/10 text-[10px] uppercase font-bold text-muted group-hover:border-cherry/30 group-hover:text-cherry">UI/UX</span>
+</div>
+</div>
+<div class="flex justify-center opacity-20 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-700">
+<div class="vinyl spin w-24 h-24" style="animation-delay: 0.2s;"></div>
+</div>
+</div>
+<!-- Track 03 -->
+<div class="track-card fi group grid grid-cols-[80px_1fr_120px] items-center border-b border-black/10 transition-colors">
+<div class="font-serif text-cherry/10 text-6xl font-light py-12 pl-4">03</div>
+<div class="px-12 py-12 border-x border-black/5">
+<div class="flex items-center gap-3 text-cherry text-[10px] font-bold uppercase tracking-widest mb-4">
+              Side B <div class="eq flex gap-0.5 h-3"><span class="w-0.5 bg-cherry"></span><span class="w-0.5 bg-cherry"></span><span class="w-0.5 bg-cherry"></span></div>
+</div>
+<h3 class="font-serif font-bold text-4xl text-ink group-hover:text-cherry transition-colors mb-4 italic">The Full Album</h3>
+<p class="text-muted max-w-xl mb-6">Design, development, strategy — end to end. We sit with you through every session.</p>
+<div class="flex gap-2">
+<span class="px-3 py-1 border border-black/10 text-[10px] uppercase font-bold text-muted group-hover:border-cherry/30 group-hover:text-cherry">Full-Stack Dev</span>
+<span class="px-3 py-1 border border-black/10 text-[10px] uppercase font-bold text-muted group-hover:border-cherry/30 group-hover:text-cherry">Product Design</span>
+</div>
+</div>
+<div class="flex justify-center opacity-20 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-700">
+<div class="vinyl spin w-24 h-24" style="animation-delay: 0.4s;"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Tracklist Section -->
+<!-- BEGIN: Process Section -->
+<section class="py-32 px-16 border-t border-black/5 relative" id="process">
+<!-- Stacked Ghost Notes far right -->
+<div class="absolute right-12 top-1/2 -translate-y-1/2 flex flex-col gap-12 opacity-10 pointer-events-none">
+<span class="font-serif text-7xl text-cherry float-el" style="--rot: 5deg;">♪</span>
+<span class="font-serif text-7xl text-cherry float-el" style="--rot: -8deg; animation-delay: 1s;">♫</span>
+<span class="font-serif text-7xl text-cherry float-el" style="--rot: 10deg; animation-delay: 2s;">♩</span>
+</div>
+<div class="max-w-screen-xl mx-auto">
+<div class="fi grid grid-cols-1 lg:grid-cols-2 gap-16 items-end mb-24">
+<div>
+<div class="flex items-center gap-4 text-cherry text-[11px] uppercase tracking-[0.3em] font-bold mb-6">
+<span class="w-8 h-[1.5px] bg-cherry"></span>
+            How it works
+          </div>
+<h2 class="font-serif font-bold text-ink leading-tight" style="font-size: clamp(44px, 5vw, 70px);">
+            How we press<br/><em class="italic text-cherry">a record</em>
+</h2>
+</div>
+<p class="text-muted text-lg mb-2">Four steps. No shortcuts. Every record we press goes through the same ritual.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 relative">
+<!-- Connecting Line -->
+<div class="hidden lg:block absolute top-[40px] left-0 right-0 h-[1px] bg-gradient-to-r from-cherry/30 via-cherry/30 to-transparent z-0"></div>
+<!-- Step 1 -->
+<div class="fi pr-8 relative z-10" style="transition-delay: 0.1s;">
+<div class="w-4 h-4 rounded-full border-2 border-cherry bg-cream mb-10 mx-auto lg:mx-0"></div>
+<div class="icon-card mb-8 mx-auto lg:mx-0">
+<div class="ic-headphone"></div>
+</div>
+<div class="text-cherry text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Step 01</div>
+<h4 class="font-serif font-bold text-2xl mb-4 italic">The Listening</h4>
+<p class="text-muted text-sm leading-relaxed">We understand your sound before we make a single mark. No assumptions.</p>
+</div>
+<!-- Step 2 -->
+<div class="fi pr-8 relative z-10" style="transition-delay: 0.2s;">
+<div class="w-4 h-4 rounded-full border-2 border-cherry bg-cream mb-10 mx-auto lg:mx-0"></div>
+<div class="icon-card mb-8 mx-auto lg:mx-0">
+<span class="font-serif text-cherry text-4xl">♪</span>
+</div>
+<div class="text-cherry text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Step 02</div>
+<h4 class="font-serif font-bold text-2xl mb-4 italic">The Session</h4>
+<p class="text-muted text-sm leading-relaxed">Concepts from scratch. No loops, no templates. Every idea has to earn its place.</p>
+</div>
+<!-- Step 3 -->
+<div class="fi pr-8 relative z-10" style="transition-delay: 0.3s;">
+<div class="w-4 h-4 rounded-full border-2 border-cherry bg-cream mb-10 mx-auto lg:mx-0"></div>
+<div class="icon-card mb-8 mx-auto lg:mx-0">
+<div class="ic-fader">
+<div class="fader-track"><div class="fader-knob" style="top: 20%;"></div></div>
+<div class="fader-track"><div class="fader-knob" style="top: 60%;"></div></div>
+<div class="fader-track"><div class="fader-knob" style="top: 40%;"></div></div>
+<div class="fader-track"><div class="fader-knob" style="top: 10%;"></div></div>
+</div>
+</div>
+<div class="text-cherry text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Step 03</div>
+<h4 class="font-serif font-bold text-2xl mb-4 italic">The Mix</h4>
+<p class="text-muted text-sm leading-relaxed">We refine until every element is right — not just good enough. Taste matters here.</p>
+</div>
+<!-- Step 4 -->
+<div class="fi pr-8 relative z-10" style="transition-delay: 0.4s;">
+<div class="w-4 h-4 rounded-full border-2 border-cherry bg-cream mb-10 mx-auto lg:mx-0"></div>
+<div class="icon-card mb-8 mx-auto lg:mx-0 overflow-hidden">
+<div class="vinyl spin w-14 h-14"></div>
+</div>
+<div class="text-cherry text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Step 04</div>
+<h4 class="font-serif font-bold text-2xl mb-4 italic">The Press</h4>
+<p class="text-muted text-sm leading-relaxed">We launch with you. We stay in the room when the needle drops — and after.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Process Section -->
+<!-- BEGIN: CTA Section -->
+<section class="bg-cherry py-32 px-16 relative overflow-hidden" id="contact">
+<!-- CTA Background elements -->
+<div class="vinyl spin-slow absolute -bottom-32 -right-32 w-[420px] h-[420px] opacity-[0.08]"></div>
+<div class="absolute top-12 left-20 font-serif text-white/10 text-[130px] pointer-events-none select-none">♪</div>
+<div class="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+<div class="fi">
+<div class="flex items-center gap-4 text-white/50 text-[11px] uppercase tracking-[0.3em] font-bold mb-6">
+<span class="w-8 h-[1.5px] bg-white/30"></span>
+          Let's work
+        </div>
+<h2 class="font-serif font-bold text-white leading-none mb-6" style="font-size: clamp(48px, 6vw, 84px);">
+          Ready to press<br/>something <em class="italic text-white/50">real?</em>
+</h2>
+<p class="text-white/60 text-lg">We take limited projects to ensure every record sounds perfect.</p>
+</div>
+<div class="fi flex flex-col items-start lg:items-end gap-6" style="transition-delay: 0.2s;">
+<a class="bg-white text-cherry px-12 py-6 text-[12px] font-bold uppercase tracking-[0.2em] shadow-2xl hover:bg-ink hover:text-white transition-all transform active:scale-95" href="mailto:hello@05rpm.studio">
+          Drop the needle →
+        </a>
+<p class="text-white/40 text-xs font-bold tracking-widest uppercase">hello@05rpm.studio</p>
+</div>
+</div>
+</section>
+<!-- END: CTA Section -->
+<!-- BEGIN: Footer -->
+<footer class="bg-ink py-16 px-16 border-t border-white/5">
+<div class="max-w-screen-xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-10">
+<div class="font-sans font-bold text-[22px] tracking-tight leading-none text-cream">
+        05<span class="text-cherry">RPM</span>
+</div>
+<div class="text-cream/30 text-[10px] uppercase tracking-[0.2em] text-center font-medium leading-loose">
+        © 2024 05RPM Studio • Nagpur, India<br/>
+        Built at our own frequency.
+      </div>
+<ul class="flex gap-10">
+<li><a class="text-cream/40 hover:text-white text-[10px] uppercase font-bold tracking-widest transition-colors" href="#">Instagram</a></li>
+<li><a class="text-cream/40 hover:text-white text-[10px] uppercase font-bold tracking-widest transition-colors" href="#">Behance</a></li>
+<li><a class="text-cream/40 hover:text-white text-[10px] uppercase font-bold tracking-widest transition-colors" href="#">LinkedIn</a></li>
+</ul>
+</div>
+</footer>
+<!-- END: Footer -->
+<script data-purpose="interaction-scripts">
+    // Cursor Logic
+    const c = document.getElementById('cur'), c2 = document.getElementById('cur2');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; c.style.left = mx + 'px'; c.style.top = my + 'px'; });
+    (function loop() { rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15; c2.style.left = rx + 'px'; c2.style.top = ry + 'px'; requestAnimationFrame(loop); })();
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { c.style.transform = 'translate(-50%, -50%) scale(2.5)'; c2.style.opacity = '0'; });
+      el.addEventListener('mouseleave', () => { c.style.transform = 'translate(-50%, -50%) scale(1)'; c2.style.opacity = '1'; });
+    });
+
+    // Intersection Observer
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('on'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+  </script>
+</body></html>

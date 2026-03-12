@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>05RPM — Built at Our Own Frequency</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        cream: '#EFE6DE',
+        cherry: '#9A0002',
+        ink: '#1A1210',
+        muted: '#8A7B72',
+      },
+      fontFamily: {
+        serif: ['Cormorant Garamond', 'serif'],
+        sans: ['Plus Jakarta Sans', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+<style>
+/* ── ANIMATIONS ── */
+@keyframes spin    { to { transform: rotate(360deg); } }
+@keyframes spinLabel { to { transform: translate(-50%,-50%) rotate(360deg); } }
+@keyframes float   { 0%,100%{transform:translateY(0) rotate(var(--rot,0deg));} 50%{transform:translateY(-10px) rotate(var(--rot,0deg));} }
+@keyframes eqBounce{ from{transform:scaleY(1);} to{transform:scaleY(0.15);} }
+@keyframes marquee { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+.spin       { animation: spin 8s linear infinite; }
+.spin-slow  { animation: spin 18s linear infinite; }
+.float-el   { animation: float 4.5s ease-in-out infinite; }
+.marquee-go { animation: marquee 26s linear infinite; }
+
+/* ── SCROLL REVEAL ── */
+.fi { opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s ease; }
+.fi.on { opacity:1; transform:translateY(0); }
+
+/* ── BODY ── */
+body { background:#EFE6DE; color:#1A1210; font-family:'Plus Jakarta Sans',sans-serif; cursor:none; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+
+/* ── CURSOR ── */
+#cur  { width:10px;height:10px;background:#9A0002;border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .2s; }
+#cur2 { width:32px;height:32px;border:1.5px solid rgba(154,0,2,.35);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .32s ease; }
+
+/* ── VINYL ── */
+.vinyl {
+  border-radius:50%;
+  background: radial-gradient(circle,
+    #2a1a18 0%,#2a1a18 19%,
+    #1a1210 19.5%,#1a1210 21%,
+    #222 21%,#111 25%,#1a1210 25%,
+    #1a1210 28%,#222 28%,#111 32%,
+    #1a1210 32%,#1a1210 35%,#222 35%,#111 40%,
+    #1a1210 40%,#222 45%,#111 50%,
+    #222 55%,#111 60%,#222 65%,
+    #111 70%,#222 75%,#111 80%,
+    #222 85%,#111 90%,#222 100%);
+  box-shadow: 0 10px 40px rgba(0,0,0,.18);
+  position:relative;
+}
+.vinyl::after {
+  content:''; position:absolute; top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:22%;height:22%;border-radius:50%;
+  background:#9A0002;
+}
+
+/* ── CASSETTE ── */
+.cass {
+  background:#FDFAF6;border-radius:5px;
+  border:1.5px solid rgba(26,18,16,.12);
+  box-shadow:0 4px 14px rgba(0,0,0,.07);
+  position:relative;
+}
+.cass::before {
+  content:'';position:absolute;top:18%;left:10%;right:10%;height:28%;
+  background:#EFE6DE;border-radius:2px;border:1px solid rgba(26,18,16,.08);
+}
+.cass::after {
+  content:'';position:absolute;top:22%;left:18%;
+  width:16%;height:18%;border-radius:50%;
+  border:2px solid #8A7B72;box-shadow:calc(100%) 0 0 #8A7B72;
+}
+.cass-label {
+  position:absolute;bottom:10%;left:10%;right:10%;height:16%;
+  background:#9A0002;border-radius:1px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:5px;color:#fff;letter-spacing:.12em;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+/* ── EQ BARS ── */
+.eq { display:flex;gap:3px;align-items:flex-end; }
+.eq span {
+  width:4px;background:#9A0002;border-radius:2px 2px 0 0;opacity:.5;
+  animation: eqBounce .7s ease-in-out infinite alternate;
+  transform-origin: bottom;
+}
+
+/* ── SLEEVE ── */
+.sleeve {
+  background:rgba(154,0,2,.07);
+  border:1.5px solid rgba(154,0,2,.15);
+  border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+}
+.sleeve::after {
+  content:'';width:54%;height:54%;border-radius:50%;
+  background:radial-gradient(circle,#2a1a18 0%,#2a1a18 22%,#333 23%,#111 100%);
+  box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+/* ── TRACK CARD ── */
+.track-card { position:relative; transition:background .3s; }
+.track-card::before {
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:#9A0002;transform:scaleY(0);transform-origin:bottom;transition:transform .4s ease;
+}
+.track-card:hover::before { transform:scaleY(1); }
+.track-card:hover { background:rgba(154,0,2,.03); }
+
+/* ── PROCESS ICON CARD ── */
+.icon-card {
+  width:72px;height:72px;
+  background:rgba(154,0,2,.07);
+  border:1.5px solid rgba(154,0,2,.15);
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  transition:background .3s;
+  flex-shrink:0;
+}
+.icon-card:hover { background:rgba(154,0,2,.14); }
+
+/* Headphone icon (CSS) */
+.ic-headphone { width:36px;height:32px;position:relative; }
+.ic-headphone::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:20px;
+  border:3px solid #9A0002;border-bottom:none;border-radius:18px 18px 0 0;
+}
+.ic-headphone::after {
+  content:'';position:absolute;bottom:0;left:0;
+  width:10px;height:14px;background:#9A0002;border-radius:4px;
+  box-shadow:26px 0 0 #9A0002;
+}
+
+/* Notes icon (CSS) */
+.ic-note { font-family:'Cormorant Garamond',serif;font-size:36px;color:#9A0002;line-height:1; }
+
+/* Mixer/fader icon (CSS) */
+.ic-fader { display:flex;gap:5px;align-items:flex-end;height:34px; }
+.ic-fader-track {
+  width:3px;height:100%;background:rgba(154,0,2,.2);border-radius:2px;
+  position:relative;
+}
+.ic-fader-track::after {
+  content:'';position:absolute;left:-4px;
+  width:11px;height:6px;
+  background:#9A0002;border-radius:2px;
+}
+.ic-fader-track:nth-child(1)::after { top:15%; }
+.ic-fader-track:nth-child(2)::after { top:55%; }
+.ic-fader-track:nth-child(3)::after { top:30%; }
+.ic-fader-track:nth-child(4)::after { top:70%; }
+
+/* Record/disk icon (CSS) */
+.ic-disk {
+  width:38px;height:38px;border-radius:50%;
+  background:radial-gradient(circle,#2a1a18 0%,#2a1a18 22%,#333 23%,#555 40%,#333 55%,#555 70%,#333 85%,#555 100%);
+  box-shadow:0 2px 8px rgba(0,0,0,.25);
+  position:relative;
+}
+.ic-disk::after {
+  content:'';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:24%;height:24%;border-radius:50%;
+  background:#9A0002;
+}
+
+/* nav active */
+.nav-link { position:relative; }
+.nav-link::after { content:'';position:absolute;bottom:-2px;left:0;right:0;height:1.5px;background:#9A0002;transform:scaleX(0);transition:transform .2s; }
+.nav-link:hover::after { transform:scaleX(1); }
+</style>
+</head>
+<body class="selection:bg-cherry selection:text-white">
+
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- ═══════════════════════════════════════════
+     NAV
+════════════════════════════════════════════ -->
+<nav class="fixed top-0 left-0 right-0 z-50 bg-cream/90 backdrop-blur-md border-b border-black/10 flex justify-between items-center px-16 py-5">
+  <!-- LOGO — flat, single line, no sup -->
+  <a href="#" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:700;line-height:1;letter-spacing:.04em;text-decoration:none;color:#1A1210;">05<span style="color:#9A0002;">RPM</span></a>
+  <ul class="flex gap-10 list-none">
+    <li><a href="#tracklist" class="nav-link font-sans text-[12px] uppercase tracking-[.12em] text-muted hover:text-cherry font-600 transition-colors">Tracklist</a></li>
+    <li><a href="#process"   class="nav-link font-sans text-[12px] uppercase tracking-[.12em] text-muted hover:text-cherry font-600 transition-colors">Process</a></li>
+    <li><a href="#contact"   class="nav-link font-sans text-[12px] uppercase tracking-[.12em] text-muted hover:text-cherry font-600 transition-colors">Let's Play</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="min-h-screen pt-28 pb-20 px-16 grid grid-cols-2 gap-16 items-center overflow-hidden">
+
+  <!-- LEFT -->
+  <div class="fi space-y-0">
+    <div class="flex items-center gap-3 text-cherry text-[11px] uppercase tracking-[.22em] font-bold mb-8">
+      <span class="w-6 h-[1.5px] bg-cherry block"></span>
+      Nagpur, India — Est. 2024
+    </div>
+    <h1 class="font-serif font-bold leading-[.96] text-ink" style="font-size:clamp(60px,6.5vw,98px);">
+      You deserve<br/>more than<br/><em class="italic text-cherry">background<br/>noise.</em>
+    </h1>
+    <p class="text-muted leading-relaxed max-w-md mt-8" style="font-size:17px;">
+      Most agencies stream forgettable work. We press records — the kind worth flipping to Side B.
+    </p>
+    <p class="text-cherry italic mt-2 mb-10" style="font-size:13px;">Not talking about music, btw.</p>
+    <a href="#contact" class="inline-flex items-center gap-4 bg-cherry text-white px-9 py-[17px] text-[12px] font-bold uppercase tracking-[.14em] hover:bg-ink transition-all active:scale-95">
+      Drop the needle <span>→</span>
+    </a>
+  </div>
+
+  <!-- RIGHT — turntable scene -->
+  <div class="relative flex items-center justify-center" style="height:520px;">
+
+    <!-- Big vinyl -->
+    <div class="vinyl spin" style="width:360px;height:360px;flex-shrink:0;z-index:1;position:relative;">
+      <!-- Label text -->
+      <div class="absolute top-1/2 left-1/2 flex items-center justify-center" style="transform:translate(-50%,-50%);width:22%;height:22%;border-radius:50%;background:#9A0002;z-index:2;">
+        <span class="font-serif text-white font-bold" style="font-size:6px;letter-spacing:.1em;">05RPM</span>
+      </div>
+    </div>
+
+    <!-- Tonearm -->
+    <div class="absolute" style="top:78px;right:62px;width:116px;height:5px;background:linear-gradient(90deg,#c0b8b0,#ddd8d0,#c0b8b0);border-radius:3px;transform-origin:right center;transform:rotate(-22deg);box-shadow:0 2px 6px rgba(0,0,0,.12);">
+      <div class="absolute" style="right:-8px;top:-9px;width:18px;height:24px;border-radius:50%;background:linear-gradient(135deg,#d4ccc4,#b0a8a0);box-shadow:0 2px 6px rgba(0,0,0,.18);"></div>
+      <div class="absolute" style="left:0;top:-2px;width:9px;height:11px;background:#9A0002;border-radius:2px;"></div>
+    </div>
+
+    <!-- Cassette — top left -->
+    <div class="cass float-el absolute" style="top:30px;left:14px;width:74px;height:48px;--rot:-8deg;animation-delay:.7s;">
+      <div class="cass-label">05RPM</div>
+    </div>
+
+    <!-- Mini vinyl — top right -->
+    <div class="vinyl spin absolute" style="top:14px;right:16px;width:54px;height:54px;animation-duration:12s;--rot:10deg;"></div>
+
+    <!-- EQ bars — bottom left -->
+    <div class="eq float-el absolute" style="bottom:88px;left:2px;height:44px;animation-delay:.5s;">
+      <span style="height:60%;animation-delay:0s;"></span>
+      <span style="height:100%;animation-delay:.18s;"></span>
+      <span style="height:45%;animation-delay:.30s;"></span>
+      <span style="height:80%;animation-delay:.10s;"></span>
+      <span style="height:55%;animation-delay:.25s;"></span>
+    </div>
+
+    <!-- Music note — bottom right -->
+    <div class="float-el absolute font-serif text-cherry" style="bottom:68px;right:26px;font-size:40px;opacity:.22;--rot:14deg;animation-delay:1.1s;">♪</div>
+
+    <!-- Record sleeve — right mid -->
+    <div class="sleeve float-el absolute" style="top:298px;right:6px;width:58px;height:58px;--rot:7deg;animation-delay:.6s;"></div>
+
+    <!-- Tiny vinyl — bottom mid -->
+    <div class="vinyl spin absolute" style="bottom:28px;left:44px;width:40px;height:40px;animation-duration:14s;--rot:-12deg;"></div>
+
+    <!-- Note — top mid -->
+    <div class="float-el absolute font-serif text-cherry" style="top:108px;left:90px;font-size:22px;opacity:.18;--rot:5deg;animation-delay:1.9s;">♫</div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     MARQUEE
+════════════════════════════════════════════ -->
+<div class="bg-cherry py-[15px] overflow-hidden whitespace-nowrap">
+  <div class="marquee-go inline-flex">
+    <div class="inline-flex items-center gap-10 px-6">
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Side A — Launch</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Side B — Grow</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Repress — Transform</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Full Album — End to End</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Five Voices. One Frequency.</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Built at Our Own RPM</span><span class="text-white/30 text-xl">·</span>
+    </div>
+    <div class="inline-flex items-center gap-10 px-6">
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Side A — Launch</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Side B — Grow</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Repress — Transform</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Full Album — End to End</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Five Voices. One Frequency.</span><span class="text-white/30 text-xl">·</span>
+      <span class="font-sans text-white/90 uppercase text-[11px] tracking-[.22em] font-medium">Built at Our Own RPM</span><span class="text-white/30 text-xl">·</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     WHY US
+════════════════════════════════════════════ -->
+<section class="border-t border-black/10 px-16 py-28">
+  <div class="grid grid-cols-2 gap-24 items-center max-w-screen-xl mx-auto">
+
+    <!-- Text -->
+    <div class="fi">
+      <div class="flex items-center gap-3 text-cherry text-[11px] uppercase tracking-[.22em] font-bold mb-5">
+        <span class="w-5 h-[1.5px] bg-cherry block"></span>Why 05RPM
+      </div>
+      <h2 class="font-serif font-bold leading-tight text-ink" style="font-size:clamp(44px,4.5vw,70px);">
+        We don't make<br/><em class="italic text-cherry">playlist filler.</em>
+      </h2>
+      <p class="text-muted leading-relaxed mt-7" style="font-size:17px;">
+        Fast agencies sound the same. <strong class="text-ink font-semibold">We move at our own speed</strong> — deliberately, intentionally — and when the work plays, you notice.
+      </p>
+      <p class="text-muted leading-relaxed mt-4" style="font-size:17px;">
+        Five students. Zero templates. <strong class="text-ink font-semibold">One standard we actually keep.</strong>
+      </p>
+    </div>
+
+    <!-- Illustration cluster -->
+    <div class="fi relative flex items-center justify-center" style="height:380px;">
+      <!-- Ghost note behind -->
+      <span class="absolute font-serif text-cherry pointer-events-none select-none" style="font-size:240px;opacity:.05;top:50%;left:50%;transform:translate(-50%,-50%);">♬</span>
+
+      <!-- Central vinyl -->
+      <div class="vinyl spin" style="width:190px;height:190px;position:relative;z-index:2;animation-duration:9s;"></div>
+
+      <!-- Cassette top-left -->
+      <div class="cass float-el absolute" style="top:18px;left:16px;width:74px;height:48px;--rot:-9deg;animation-delay:.9s;">
+        <div class="cass-label">05RPM</div>
+      </div>
+
+      <!-- EQ bottom-left -->
+      <div class="eq float-el absolute" style="bottom:48px;left:22px;height:44px;animation-delay:.4s;">
+        <span style="height:55%;animation-delay:0s;"></span>
+        <span style="height:90%;animation-delay:.2s;"></span>
+        <span style="height:65%;animation-delay:.1s;"></span>
+        <span style="height:100%;animation-delay:.3s;"></span>
+        <span style="height:45%;animation-delay:.15s;"></span>
+      </div>
+
+      <!-- Sleeve top-right -->
+      <div class="sleeve float-el absolute" style="top:10px;right:28px;width:60px;height:60px;--rot:8deg;animation-delay:.6s;"></div>
+
+      <!-- Note right -->
+      <div class="float-el absolute font-serif text-cherry" style="bottom:80px;right:10px;font-size:48px;opacity:.22;--rot:12deg;animation-delay:1.3s;">♩</div>
+
+      <!-- Small vinyl bottom-right -->
+      <div class="vinyl spin absolute" style="bottom:18px;right:38px;width:46px;height:46px;animation-duration:13s;animation-delay:.8s;"></div>
+
+      <!-- Note left -->
+      <div class="float-el absolute font-serif text-cherry" style="top:148px;left:2px;font-size:22px;opacity:.18;--rot:-5deg;animation-delay:2s;">♫</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     TRACKLIST
+════════════════════════════════════════════ -->
+<section class="border-t border-black/10 px-16 py-28" id="tracklist">
+  <div class="max-w-screen-xl mx-auto">
+
+    <!-- Header row -->
+    <div class="fi grid grid-cols-2 gap-16 items-end mb-16">
+      <div>
+        <div class="flex items-center gap-3 text-cherry text-[11px] uppercase tracking-[.22em] font-bold mb-5">
+          <span class="w-5 h-[1.5px] bg-cherry block"></span>Our Services
+        </div>
+        <h2 class="font-serif font-bold leading-none text-ink" style="font-size:clamp(48px,5vw,74px);">
+          The <em class="italic text-cherry">Tracklist</em>
+        </h2>
+      </div>
+      <p class="text-muted leading-relaxed pb-2" style="font-size:17px;">
+        Every service we offer, pressed with full intent.<br/>Pick your track.
+      </p>
+    </div>
+
+    <!-- Track rows -->
+    <div class="flex flex-col border-t border-black/10">
+
+      <!-- 01 -->
+      <div class="track-card fi group border-b border-black/10">
+        <div class="py-12 grid items-center" style="grid-template-columns:80px 1fr 120px;">
+          <span class="font-serif font-light text-cherry/20" style="font-size:60px;line-height:1;">01</span>
+          <div class="px-10">
+            <div class="flex items-center gap-2 text-cherry font-bold uppercase mb-3" style="font-size:11px;letter-spacing:.22em;">
+              Side A
+              <div class="eq inline-flex" style="height:13px;">
+                <span style="height:55%;animation-delay:0s;"></span>
+                <span style="height:100%;animation-delay:.2s;"></span>
+                <span style="height:70%;animation-delay:.1s;"></span>
+                <span style="height:40%;animation-delay:.3s;"></span>
+              </div>
+            </div>
+            <h3 class="font-serif font-bold group-hover:text-cherry transition-colors mb-3" style="font-size:38px;line-height:1;"><em class="italic">The Launch</em></h3>
+            <p class="text-muted leading-relaxed mb-5" style="font-size:16px;max-width:480px;">Your first pressing. Enter the market with a sound people actually remember.</p>
+            <div class="flex gap-2 flex-wrap">
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Brand Identity</span>
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Web Design</span>
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Go-to-Market</span>
+            </div>
+          </div>
+          <div class="flex justify-center items-center border-l border-black/10 h-full">
+            <div class="vinyl spin opacity-25 group-hover:opacity-70 transition-opacity" style="width:80px;height:80px;animation-duration:11s;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div class="track-card fi group border-b border-black/10">
+        <div class="py-12 grid items-center" style="grid-template-columns:80px 1fr 120px;">
+          <span class="font-serif font-light text-cherry/20" style="font-size:60px;line-height:1;">02</span>
+          <div class="px-10">
+            <div class="flex items-center gap-2 text-cherry font-bold uppercase mb-3" style="font-size:11px;letter-spacing:.22em;">
+              Side A
+              <div class="eq inline-flex" style="height:13px;">
+                <span style="height:70%;animation-delay:.15s;"></span>
+                <span style="height:40%;animation-delay:0s;"></span>
+                <span style="height:100%;animation-delay:.25s;"></span>
+                <span style="height:60%;animation-delay:.1s;"></span>
+              </div>
+            </div>
+            <h3 class="font-serif font-bold group-hover:text-cherry transition-colors mb-3" style="font-size:38px;line-height:1;"><em class="italic">The Single</em></h3>
+            <p class="text-muted leading-relaxed mb-5" style="font-size:16px;max-width:480px;">One problem. One sharp solution. No full-album commitment needed.</p>
+            <div class="flex gap-2 flex-wrap">
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Landing Pages</span>
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">UI/UX</span>
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Campaigns</span>
+            </div>
+          </div>
+          <div class="flex justify-center items-center border-l border-black/10 h-full">
+            <div class="vinyl spin opacity-25 group-hover:opacity-70 transition-opacity" style="width:80px;height:80px;animation-duration:13s;animation-delay:.4s;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div class="track-card fi group border-b border-black/10">
+        <div class="py-12 grid items-center" style="grid-template-columns:80px 1fr 120px;">
+          <span class="font-serif font-light text-cherry/20" style="font-size:60px;line-height:1;">03</span>
+          <div class="px-10">
+            <div class="flex items-center gap-2 text-cherry font-bold uppercase mb-3" style="font-size:11px;letter-spacing:.22em;">
+              Side B
+              <div class="eq inline-flex" style="height:13px;">
+                <span style="height:45%;animation-delay:.2s;"></span>
+                <span style="height:85%;animation-delay:0s;"></span>
+                <span style="height:60%;animation-delay:.3s;"></span>
+                <span style="height:100%;animation-delay:.1s;"></span>
+              </div>
+            </div>
+            <h3 class="font-serif font-bold group-hover:text-cherry transition-colors mb-3" style="font-size:38px;line-height:1;"><em class="italic">The Full Album</em></h3>
+            <p class="text-muted leading-relaxed mb-5" style="font-size:16px;max-width:480px;">Design, development, strategy — end to end. We sit with you through every session.</p>
+            <div class="flex gap-2 flex-wrap">
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Full-Stack Dev</span>
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Product Design</span>
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Visual Identity</span>
+            </div>
+          </div>
+          <div class="flex justify-center items-center border-l border-black/10 h-full">
+            <div class="vinyl spin opacity-25 group-hover:opacity-70 transition-opacity" style="width:80px;height:80px;animation-duration:10s;animation-delay:.8s;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 -->
+      <div class="track-card fi group border-b border-black/10">
+        <div class="py-12 grid items-center" style="grid-template-columns:80px 1fr 120px;">
+          <span class="font-serif font-light text-cherry/20" style="font-size:60px;line-height:1;">04</span>
+          <div class="px-10">
+            <div class="flex items-center gap-2 text-cherry font-bold uppercase mb-3" style="font-size:11px;letter-spacing:.22em;">
+              Side B
+              <div class="eq inline-flex" style="height:13px;">
+                <span style="height:80%;animation-delay:.1s;"></span>
+                <span style="height:50%;animation-delay:.25s;"></span>
+                <span style="height:100%;animation-delay:0s;"></span>
+                <span style="height:35%;animation-delay:.2s;"></span>
+              </div>
+            </div>
+            <h3 class="font-serif font-bold group-hover:text-cherry transition-colors mb-3" style="font-size:38px;line-height:1;"><em class="italic">The Repress</em></h3>
+            <p class="text-muted leading-relaxed mb-5" style="font-size:16px;max-width:480px;">Your brand exists but sounds dated. We remaster — nothing changed without reason.</p>
+            <div class="flex gap-2 flex-wrap">
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Rebrand</span>
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">UX Audit</span>
+              <span class="font-sans text-[11px] uppercase tracking-[.1em] px-3 py-[6px] border border-black/10 text-muted group-hover:border-cherry/25 group-hover:text-cherry transition-all">Performance</span>
+            </div>
+          </div>
+          <div class="flex justify-center items-center border-l border-black/10 h-full">
+            <div class="vinyl spin opacity-25 group-hover:opacity-70 transition-opacity" style="width:80px;height:80px;animation-duration:15s;animation-delay:1.2s;"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     PROCESS
+════════════════════════════════════════════ -->
+<section class="border-t border-black/10 px-16 py-28 relative overflow-hidden" id="process">
+  <div class="max-w-screen-xl mx-auto">
+
+    <!-- Header -->
+    <div class="fi grid grid-cols-2 gap-16 items-end mb-20">
+      <div>
+        <div class="flex items-center gap-3 text-cherry text-[11px] uppercase tracking-[.22em] font-bold mb-5">
+          <span class="w-5 h-[1.5px] bg-cherry block"></span>How it works
+        </div>
+        <h2 class="font-serif font-bold leading-none text-ink" style="font-size:clamp(44px,4.5vw,70px);">
+          How we press<br/><em class="italic text-cherry">a record</em>
+        </h2>
+      </div>
+      <p class="text-muted leading-relaxed pb-2" style="font-size:17px;">
+        Four steps. No shortcuts.<br/>Every record we press goes through the same ritual.
+      </p>
+    </div>
+
+    <!-- Timeline -->
+    <div class="grid grid-cols-4 relative" style="gap:0;">
+
+      <!-- Connecting line -->
+      <div class="absolute h-[1.5px] bg-gradient-to-r from-cherry to-cherry/10" style="top:35px;left:0;right:0;"></div>
+
+      <!-- Step 01 — Headphone icon -->
+      <div class="fi pr-10 relative" style="transition-delay:.05s;">
+        <div class="w-[14px] h-[14px] rounded-full border-2 border-cherry bg-cream relative z-10 mb-7 group-hover:bg-cherry transition-colors" style="margin-top:28px;"></div>
+        <div class="icon-card mb-5">
+          <div class="ic-headphone"></div>
+        </div>
+        <div class="text-cherry font-bold uppercase mb-2" style="font-size:11px;letter-spacing:.22em;">Step 01</div>
+        <h4 class="font-serif font-bold text-ink mb-3" style="font-size:26px;line-height:1.1;">The <em class="italic">Listening</em></h4>
+        <p class="text-muted leading-relaxed" style="font-size:15px;">We understand your sound before we make a single mark. No assumptions.</p>
+      </div>
+
+      <!-- Step 02 — Music note icon -->
+      <div class="fi pr-10 relative" style="transition-delay:.12s;">
+        <div class="w-[14px] h-[14px] rounded-full border-2 border-cherry bg-cream relative z-10 mb-7" style="margin-top:28px;"></div>
+        <div class="icon-card mb-5">
+          <div class="ic-note">♪</div>
+        </div>
+        <div class="text-cherry font-bold uppercase mb-2" style="font-size:11px;letter-spacing:.22em;">Step 02</div>
+        <h4 class="font-serif font-bold text-ink mb-3" style="font-size:26px;line-height:1.1;">The <em class="italic">Session</em></h4>
+        <p class="text-muted leading-relaxed" style="font-size:15px;">Concepts from scratch. No loops, no templates. Every idea has to earn its place.</p>
+      </div>
+
+      <!-- Step 03 — Fader/mixer icon -->
+      <div class="fi pr-10 relative" style="transition-delay:.19s;">
+        <div class="w-[14px] h-[14px] rounded-full border-2 border-cherry bg-cream relative z-10 mb-7" style="margin-top:28px;"></div>
+        <div class="icon-card mb-5">
+          <div class="ic-fader">
+            <div class="ic-fader-track"></div>
+            <div class="ic-fader-track"></div>
+            <div class="ic-fader-track"></div>
+            <div class="ic-fader-track"></div>
+          </div>
+        </div>
+        <div class="text-cherry font-bold uppercase mb-2" style="font-size:11px;letter-spacing:.22em;">Step 03</div>
+        <h4 class="font-serif font-bold text-ink mb-3" style="font-size:26px;line-height:1.1;">The <em class="italic">Mix</em></h4>
+        <p class="text-muted leading-relaxed" style="font-size:15px;">We refine until every element is right — not just good enough. Taste matters here.</p>
+      </div>
+
+      <!-- Step 04 — Disk icon -->
+      <div class="fi relative" style="transition-delay:.26s;">
+        <div class="w-[14px] h-[14px] rounded-full border-2 border-cherry bg-cream relative z-10 mb-7" style="margin-top:28px;"></div>
+        <div class="icon-card mb-5">
+          <div class="ic-disk"></div>
+        </div>
+        <div class="text-cherry font-bold uppercase mb-2" style="font-size:11px;letter-spacing:.22em;">Step 04</div>
+        <h4 class="font-serif font-bold text-ink mb-3" style="font-size:26px;line-height:1.1;">The <em class="italic">Press</em></h4>
+        <p class="text-muted leading-relaxed" style="font-size:15px;">We launch with you. We stay in the room when the needle drops — and after.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Background floating notes -->
+  <div class="absolute pointer-events-none" style="right:48px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:20px;opacity:.1;">
+    <span class="font-serif text-cherry float-el" style="font-size:54px;animation-delay:0s;">♪</span>
+    <span class="font-serif text-cherry float-el" style="font-size:38px;animation-delay:.7s;">♫</span>
+    <span class="font-serif text-cherry float-el" style="font-size:60px;animation-delay:1.4s;">♩</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     CTA
+════════════════════════════════════════════ -->
+<section class="bg-cherry relative overflow-hidden" id="contact">
+  <!-- Ghost vinyl -->
+  <div class="vinyl spin-slow absolute" style="width:420px;height:420px;right:-80px;bottom:-80px;opacity:.08;"></div>
+  <!-- Ghost notes -->
+  <span class="absolute font-serif text-white/10 pointer-events-none select-none" style="font-size:130px;top:30px;left:80px;line-height:1;">♪</span>
+  <span class="absolute font-serif text-white/6 pointer-events-none select-none" style="font-size:80px;bottom:20px;right:260px;line-height:1;">♫</span>
+
+  <div class="px-16 py-28 grid grid-cols-2 gap-20 items-center max-w-screen-xl mx-auto relative z-10">
+    <div class="fi">
+      <div class="flex items-center gap-3 text-white/50 text-[11px] uppercase tracking-[.22em] font-bold mb-6">
+        <span class="w-5 h-[1.5px] bg-white/40 block"></span>Let's work
+      </div>
+      <h2 class="font-serif font-bold leading-none text-white" style="font-size:clamp(46px,5vw,76px);">
+        Ready to press<br/>something <em class="italic text-white/50">real?</em>
+      </h2>
+      <p class="text-white/60 leading-relaxed mt-5" style="font-size:17px;">
+        We take limited projects to ensure every record sounds perfect.
+      </p>
+    </div>
+    <div class="fi flex flex-col items-start gap-4" style="transition-delay:.14s;">
+      <a href="mailto:hello@05rpm.studio" class="inline-flex items-center gap-4 bg-white text-cherry px-10 py-[18px] text-[12px] font-bold uppercase tracking-[.14em] hover:bg-ink hover:text-white transition-all active:scale-95 shadow-2xl">
+        Drop the needle →
+      </a>
+      <span class="text-white/40 font-sans" style="font-size:12px;letter-spacing:.1em;">hello@05rpm.studio</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer class="bg-ink py-14 px-16 flex justify-between items-center">
+  <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:700;line-height:1;letter-spacing:.04em;color:#EFE6DE;">05<span style="color:#9A0002;">RPM</span></div>
+  <div class="text-cream/30 font-sans text-center leading-loose" style="font-size:12px;letter-spacing:.06em;">
+    © 2024 05RPM Studio · Nagpur, India<br/>Built at our own frequency.
+  </div>
+  <ul class="flex gap-8 list-none">
+    <li><a href="#" class="font-sans text-cream/40 hover:text-white transition-colors uppercase" style="font-size:11px;letter-spacing:.12em;">Instagram</a></li>
+    <li><a href="#" class="font-sans text-cream/40 hover:text-white transition-colors uppercase" style="font-size:11px;letter-spacing:.12em;">Behance</a></li>
+    <li><a href="#" class="font-sans text-cream/40 hover:text-white transition-colors uppercase" style="font-size:11px;letter-spacing:.12em;">LinkedIn</a></li>
+  </ul>
+</footer>
+
+<script>
+// Cursor
+const c=document.getElementById('cur'),c2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c.style.left=mx+'px';c.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;c2.style.left=rx+'px';c2.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{c.style.transform='translate(-50%,-50%) scale(2)';c2.style.opacity='0';});
+  el.addEventListener('mouseleave',()=>{c.style.transform='translate(-50%,-50%) scale(1)';c2.style.opacity='1';});
+});
+
+// Scroll reveal
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');});},{threshold:.08});
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.getElementById(a.getAttribute('href').slice(1));
+    if(t)window.scrollTo({top:t.getBoundingClientRect().top+window.pageYOffset-80,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
