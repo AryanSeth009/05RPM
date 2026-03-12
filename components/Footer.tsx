@@ -10,7 +10,7 @@ export default function Footer() {
                 </div>
 
                 <div className="text-cream/30 text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-widest text-center font-medium leading-loose mb-4 md:mb-0">
-                    © 2024 05RPM Studio • Nagpur, India<br />
+                    © 2026 05RPM Studio • Nagpur, India<br />
                     Built at our own frequency.
                 </div>
 

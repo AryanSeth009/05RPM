@@ -3,47 +3,109 @@
 import React, { useState } from 'react'
 import Vinyl from '@/components/ui/Vinyl'
 
-export default function Archives() {
-  const [activeTrack, setActiveTrack] = useState(1);
+export interface CaseStudyType {
+  main_image_src: string;
+  project_title: string;
+  logo_src?: string;
+  image_fit?: "cover" | "contain";
+  description: string;
+  features: string[];
+  case_study_link: string;
+  name: string;
+  demo_images: string[];
+  project_link?: string | null;
+  cta_links?: {
+    "let's talk": string;
+    "read case study": string;
+  };
+  test_img?: string;
+  testimonial?: string;
+  founder_name?: string;
+  position?: string;
+}
 
-  const tracks = [
-    {
-      id: 1,
-      side: 'Side A',
-      year: '2026',
-      title: 'Project Arjuna',
-      desc: 'Full-Stack Development & Architecture',
-      img: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=2070&auto=format&fit=crop',
-      alt: 'Project Arjuna Mockup'
-    },
-    {
-      id: 2,
-      side: 'Side A',
-      year: '2026',
-      title: 'Ignite Forum',
-      desc: 'Community Platform & Brand Identity',
-      img: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop',
-      alt: 'Ignite Forum Mockup'
-    },
-    {
-      id: 3,
-      side: 'Side B',
-      year: '2025',
-      title: 'FinAnalytics UI',
-      desc: 'Business Data Dashboard',
-      img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop',
-      alt: 'FinAnalytics Mockup'
-    },
-    {
-      id: 4,
-      side: 'Side B',
-      year: '2025',
-      title: 'SafeRoute System',
-      desc: 'Incident Response Interface',
-      img: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2070&auto=format&fit=crop',
-      alt: 'SafeRoute Mockup'
-    }
-  ];
+export const caseStudies: CaseStudyType[] = [
+  {
+    main_image_src: "/projects/insight2.webp",
+    project_title: "Website of Insight Cultural event",
+    logo_src: "",
+    description:
+      "The sports points table of insight where all departments compete to get the sports trophy.",
+    features: [
+      "INSIGHT, the annual college extravaganza aimed at developing cultural talents of the students. It provides a platform for creative and innovative display of talent. INSIGHT brings together students from all departments to celebrate creativity, talent, and spirit of competition.",
+      "It's a spectacular showcase of cultural performances, sports events, and celebrations that define our college community.",
+    ],
+    case_study_link: "#",
+    name: "Insight",
+    demo_images: [
+      "/projects/insight1.webp",
+      "/projects/insight2.webp",
+      "/projects/insight3.webp",
+      "/projects/insight4.webp",
+    ],
+  },
+  {
+    main_image_src: "/projects/project2.webp",
+    project_title: "IT Enterprise with best guidance from experts",
+    logo_src: "",
+    description: "Description for the second project goes here.",
+    features: [
+      "We provide expert-driven IT solutions to help businesses grow with secure, scalable, and modern technology.  ",
+      "Our team ensures reliable development, smooth deployment, and continuous support for every project.",
+    ],
+    case_study_link: "#",
+    name: "Project Two",
+    demo_images: ["/projects/project2.webp"],
+  },
+  {
+    main_image_src: "/projects/league2.webp",
+    project_title: "TNPS boys hostel league app with leaderboard and team details",
+    logo_src: "",
+    image_fit: "contain",
+    description: "Description for the third project goes here.",
+    features: [
+      "The TNPS Boys Hostel League is a legacy competition where seven teams vie for the prestigious title of Champion. Starting this year, we’ve launched a five-year franchise model to strengthen each team’s brand. Along with seven diverse sports, we’ve added an exciting E-sports category to showcase digital talent. A cultural competition also adds a creative dimension, with points from both sports and culture contributing to the final rankings.",
+      "On the grand Hostel Day, teams are honored as the Winner, Runner-up, and Second Runner-up. This year, we've embraced technology by launching our own app to streamline the league's operations and enhance engagement. These activities foster unity, team spirit, and healthy competition among the participants.",
+    ],
+    case_study_link: "#",
+    name: "Project Three",
+    demo_images: ["/projects/league2.webp",
+                  "/projects/league.webp",
+    ],
+  },
+  {
+    main_image_src: "/projects/algo1.webp",
+    project_title: "Algorithm Visualizer ",
+    logo_src: "",
+    description: "Understand complex concepts easily with animated execution, pseudocode explanations, and guided practice.",
+    features: [
+      "Learn algorithms in an interactive and visual way with our 3D Algorithm Visualizer platform. Explore detailed theory, animated execution, and step-by-step explanations designed for better understanding.",
+      "Practice with real GATE questions, track your progress, and improve problem-solving skills with AI assistance. Everything you need to master Data Structures and Algorithms in one powerful learning environment.",
+    ],
+    case_study_link: "#",
+    name: "Project Four",
+    demo_images: [
+      "/projects/algo1.webp",
+      "/projects/algo2.webp",
+      "/projects/algo3.webp",
+      "/projects/algo4.webp",
+    ],
+  },
+];
+
+export default function Archives() {
+  const [activeTrack, setActiveTrack] = useState(0);
+
+  const tracks = caseStudies.map((project, index) => ({
+    id: index,
+    side: index < 2 ? 'Side A' : 'Side B',
+    year: '2026', // Placeholder if needed
+    title: project.name,
+    desc: project.description,
+    img: project.main_image_src,
+    alt: project.project_title,
+    image_fit: project.image_fit || "cover"
+  }));
 
   return (
     <section className="py-20 md:py-32 px-4 md:px-16 flex items-center relative border-t border-black/5">
@@ -75,7 +137,7 @@ export default function Archives() {
                   <span className={`font-serif text-5xl font-light transition-colors duration-[400ms] ${
                     isActive ? 'text-cherry/15' : 'text-ink/10 group-hover:text-cherry/15'
                   }`}>
-                    {track.id.toString().padStart(2, '0')}
+                    {(track.id + 1).toString().padStart(2, '0')}
                   </span>
                   <div>
                     <div className="flex items-center gap-3 mb-1 mt-1">
@@ -112,30 +174,41 @@ export default function Archives() {
           </div>
         </div>
 
-        <div className="col-span-1 lg:col-span-7 fi relative h-[500px] lg:h-[700px] w-full flex items-center justify-center">
+        <div className="col-span-1 lg:col-span-7 fi relative aspect-square md:aspect-[4/3] lg:aspect-[1.5] w-full flex items-center justify-center">
           
-          <div className="absolute -right-12 top-1/2 -translate-y-1/2 z-0 hidden lg:block opacity-40 mix-blend-multiply">
-             <Vinyl size={400} className="w-[400px] h-[400px]" speed={12} />
+          <div className="absolute -right-20 top-1/2 -translate-y-1/2 z-0 hidden lg:block opacity-40 mix-blend-multiply">
+             <Vinyl size={400} className="w-[600px] h-[600px]" speed={12} />
           </div>
 
-          <div className="relative w-full h-[100%] bg-ink/5 overflow-hidden z-10 border border-black/10 shadow-2xl">
+          <div className="relative w-full h-full bg-cream/30 overflow-hidden z-10 border border-black/5 shadow-2xl flex items-center justify-center p-1 md:p-4">
+            {/* Subtle background pattern/texture for the "archive" feel */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+            
             {tracks.map((track) => {
               const isActive = activeTrack === track.id;
               return (
-                <img 
+                <div 
                   key={track.id}
-                  src={track.img} 
-                  className={`absolute inset-0 w-full h-full object-cover transition-all duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)] select-none pointer-events-none custom-mockup-img ${
+                  className={`absolute inset-1 md:inset-4 transition-all duration-[800ms] ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center justify-center ${
                     isActive 
-                      ? 'opacity-100 visible scale-100' 
-                      : 'opacity-0 invisible scale-[1.03]'
-                  }`} 
-                  alt={track.alt} 
-                />
+                      ? 'opacity-100 visible scale-100 translate-y-0' 
+                      : 'opacity-0 invisible scale-[1.05] translate-y-8'
+                  }`}
+                >
+                  <div className="relative w-full h-full flex items-center justify-center">
+                    <img 
+                      src={track.img} 
+                      className="w-full h-full object-contain select-none pointer-events-none drop-shadow-2xl rounded-sm" 
+                      alt={track.alt} 
+                    />
+                    {/* Subtle "screen" glare reflection */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none rounded-sm"></div>
+                  </div>
+                </div>
               );
             })}
             
-            <div className="absolute inset-0 bg-ink/10 mix-blend-overlay pointer-events-none"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink/5 pointer-events-none"></div>
           </div>
           
           <div className="absolute bottom-6 right-8 text-white text-[10px] uppercase font-bold tracking-[0.3em] z-20 mix-blend-difference hidden lg:block select-none pointer-events-none">

@@ -12,7 +12,7 @@ export default function Hero() {
                 <div className="fi flex flex-col items-center md:items-start pt-8 md:pt-0">
                     <div className="flex items-center gap-2 md:gap-4 text-cherry text-[10px] md:text-[11px] uppercase tracking-[0.2em] md:tracking-[0.3em] font-bold mb-4 md:mb-8">
                         <span className="w-4 md:w-8 h-[1px] md:h-[1.5px] bg-cherry"></span>
-                        Nagpur, India — Est. 2024
+                        Nagpur, India — Est. 2026
                     </div>
                     <h1 className="font-serif font-bold leading-[0.95] text-ink text-[52px] md:text-[clamp(64px,7vw,100px)] mb-6 md:mb-8">
                         You deserve<br />more than<br /><em className="italic text-cherry">background<br />noise.</em>
