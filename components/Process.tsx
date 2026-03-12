@@ -277,7 +277,7 @@ export default function Process() {
                 </div>
 
                 {/* Steps Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-6 md:gap-x-5 relative items-stretch">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-4 md:gap-y-6 md:gap-x-5 relative items-stretch">
 
 
                     {steps.map((s) => (
@@ -287,14 +287,9 @@ export default function Process() {
                             style={{
                                 opacity: visible ? undefined : 0,
                                 animationPlayState: visible ? 'running' : 'paused',
+                                animationDelay: s.delay,
                             }}
                         >
-
-                            {/* Mobile vertical line */}
-                            <div className="md:hidden flex justify-center mb-4">
-                                <div className="w-[2px] h-6 bg-cherry" />
-                            </div>
-
                             <StepCard {...s} />
                         </div>
                     ))}
