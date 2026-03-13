@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useRef, useEffect, useState } from 'react'
-import FloatEl from '@/components/ui/FloatEl'
 import { HeadphoneIcon, MusicNoteIcon, FaderMixerIcon, VinylDiskIcon } from '@/components/ui/ProcessIcons'
 
 const steps = [

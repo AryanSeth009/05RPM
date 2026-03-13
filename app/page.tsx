@@ -7,6 +7,7 @@ import Marquee from '@/components/Marquee'
 import WhyUs from '@/components/WhyUs'
 import Tracklist from '@/components/Tracklist'
 import Archives from '@/components/Archives'
+import CaseStudies from '@/components/CaseStudies'
 import Process from '@/components/Process'
 import CTA from '@/components/CTA'
 import Footer from '@/components/Footer'
@@ -22,6 +23,7 @@ export default function Home() {
         <Marquee />
         <WhyUs />
         <Tracklist />
+        <CaseStudies />
         <Archives />
         <Process />
         <CTA />

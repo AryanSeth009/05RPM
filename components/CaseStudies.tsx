@@ -68,7 +68,7 @@ const CaseStudyCard: React.FC<{ caseStudy: CaseStudyType; index: number }> = ({ 
 
                     {/* Catalog Number Decoration */}
                     <div className="absolute -bottom-8 right-0 font-mono text-[9px] text-muted tracking-widest uppercase opacity-50 hidden md:block">
-                        RPM-REF: {caseStudy.name.substring(0, 3).toUpperCase()}-{2026 + index} // VOL. 0{index + 1}
+                        RPM-REF: {caseStudy.name.substring(0, 3).toUpperCase()}-{2026 + index} {/* VOL. 0{index + 1} */}
                     </div>
                 </div>
             </div>
