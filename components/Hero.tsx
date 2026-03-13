@@ -20,7 +20,7 @@ export default function Hero() {
                     <p className="text-muted text-[15px] md:text-lg max-w-md leading-relaxed mb-8 md:mb-2">
                         Most agencies stream forgettable work. We press records — the kind worth flipping to Side B.
                     </p>
-                    <p className="hidden md:block text-cherry italic text-sm mb-12 font-medium">Not talking about music, btw.</p>
+                    <p className="text-cherry italic text-sm mb-8 md:mb-12 font-medium">Not talking about music, btw.</p>
                     <a className="inline-flex items-center justify-center gap-4 bg-cherry text-white px-8 md:px-10 py-4 md:py-5 text-[11px] md:text-[12px] font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] transform transition-all hover:bg-ink hover:-translate-y-1 active:scale-95" href="#contact">
                         Drop the needle <span>→</span>
                     </a>

@@ -195,9 +195,9 @@ export default function Archives() {
           </ul>
 
           <div className="mt-12">
-            <a className="inline-flex items-center gap-3 text-ink text-[11px] font-bold uppercase tracking-[0.2em] hover:text-cherry transition-colors nav-link" href="#">
+            {/* <a className="inline-flex items-center gap-3 text-ink text-[11px] font-bold uppercase tracking-[0.2em] hover:text-cherry transition-colors nav-link" href="#">
               View Full Discography <span>→</span>
-            </a>
+            </a> */}
           </div>
         </div>
 
