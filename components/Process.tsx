@@ -65,35 +65,24 @@ function StepCard({ Icon, step, title, desc, animDelay }: typeof steps[0]) {
             onMouseEnter={() => setHovered(true)}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="step-card relative z-10 flex flex-col items-center text-center md:text-left md:items-start group"
+            className="step-card relative z-10 flex flex-col items-center text-center group h-full"
             style={{
                 animationDelay: animDelay,
                 transform: `perspective(800px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) translateZ(${hovered ? '10px' : '0px'})`,
                 transition: hovered ? 'transform 0.1s ease-out' : 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
             }}
         >
-            {/* Glow Halo */}
-            <div
-                className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500"
-                style={{
-                    opacity: hovered ? 1 : 0,
-                    background: 'radial-gradient(ellipse at center, rgba(190,30,45,0.12) 0%, transparent 70%)',
-                    filter: 'blur(16px)',
-                }}
-            />
+            {/* Glow Halo removed */}
 
             {/* Card inner glass panel */}
             <div
-                className="relative w-full rounded-2xl px-5 py-7 md:px-6 md:py-8 transition-all duration-500"
+                className="relative w-full h-full rounded-2xl px-5 py-7 md:px-6 md:py-8 transition-all duration-500"
                 style={{
-                    background: hovered
-                        ? 'linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04))'
-                        : 'linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
-                    border: hovered ? '1px solid rgba(190,30,45,0.35)' : '1px solid rgba(0,0,0,0.06)',
+                    background: '#EFE6DE',
+                    border: hovered ? '1px solid rgba(154,0,2,0.25)' : '1px solid rgba(0,0,0,0.07)',
                     boxShadow: hovered
-                        ? '0 20px 60px -10px rgba(190,30,45,0.18), 0 4px 20px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.15)'
-                        : '0 4px 24px rgba(0,0,0,0.04)',
-                    backdropFilter: 'blur(12px)',
+                        ? '0 8px 32px rgba(154,0,2,0.10)'
+                        : '0 2px 12px rgba(0,0,0,0.04)',
                 }}
             >
                 {/* Step number — floats up on hover */}
@@ -106,7 +95,7 @@ function StepCard({ Icon, step, title, desc, animDelay }: typeof steps[0]) {
 
                 {/* Icon wrapper — 3D lift + spin on hover */}
                 <div
-                    className="mb-5 md:mb-7 flex justify-center md:justify-start transition-all duration-500"
+                    className="mb-5 md:mb-7 flex justify-center transition-all duration-500"
                     style={{
                         transform: hovered
                             ? 'perspective(400px) translateZ(20px) rotateY(-8deg) scale(1.1)'
@@ -128,10 +117,14 @@ function StepCard({ Icon, step, title, desc, animDelay }: typeof steps[0]) {
                     {title}
                 </h4>
 
-                {/* Divider line — expands on hover */}
+                {/* Divider line — expands from center on hover */}
                 <div
-                    className="h-[1px] bg-cherry/30 mb-3 md:mb-4 transition-all duration-500"
-                    style={{ width: hovered ? '80%' : '32px', opacity: hovered ? 1 : 0.5 }}
+                    className="h-[1px] bg-cherry/30 mb-3 md:mb-4 transition-all duration-500 w-[80%] mx-auto"
+                    style={{
+                        transform: hovered ? 'scaleX(1)' : 'scaleX(0.3)',
+                        transformOrigin: 'center',
+                        opacity: hovered ? 1 : 0.5
+                    }}
                 />
 
                 {/* Description */}
@@ -142,15 +135,7 @@ function StepCard({ Icon, step, title, desc, animDelay }: typeof steps[0]) {
                     {desc}
                 </p>
 
-                {/* Bottom shine line */}
-                <div
-                    className="absolute bottom-0 left-0 right-0 h-[2px] rounded-b-2xl transition-all duration-700"
-                    style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(190,30,45,0.6), transparent)',
-                        opacity: hovered ? 1 : 0,
-                        transform: hovered ? 'scaleX(1)' : 'scaleX(0)',
-                    }}
-                />
+
             </div>
         </div>
     )
@@ -210,27 +195,7 @@ export default function Process() {
                 }
             `}</style>
 
-            {/* ── Ambient Orbs ── */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-                <div
-                    className="absolute w-[500px] h-[500px] rounded-full"
-                    style={{
-                        background: 'radial-gradient(circle, rgba(190,30,45,0.07) 0%, transparent 70%)',
-                        top: '-10%', left: '-5%',
-                        animation: 'orbDrift 18s ease-in-out infinite',
-                        animationDelay: '0s',
-                    }}
-                />
-                <div
-                    className="absolute w-[400px] h-[400px] rounded-full"
-                    style={{
-                        background: 'radial-gradient(circle, rgba(190,30,45,0.05) 0%, transparent 70%)',
-                        bottom: '-5%', right: '-5%',
-                        animation: 'orbDrift 22s ease-in-out infinite reverse',
-                        animationDelay: '-8s',
-                    }}
-                />
-            </div>
+
 
             {/* ── Desktop Ghost Notes — far right (parallax) ── */}
             <div
@@ -262,10 +227,10 @@ export default function Process() {
                 <svg width="320" height="320" viewBox="0 0 320 320" fill="none">
                     <circle cx="160" cy="160" r="155" stroke="rgba(190,30,45,0.15)" strokeWidth="1.5" />
                     <circle cx="160" cy="160" r="120" stroke="rgba(190,30,45,0.10)" strokeWidth="1" />
-                    <circle cx="160" cy="160" r="85"  stroke="rgba(190,30,45,0.08)" strokeWidth="1" />
-                    <circle cx="160" cy="160" r="50"  stroke="rgba(190,30,45,0.12)" strokeWidth="1.5" />
-                    <circle cx="160" cy="160" r="12"  fill="rgba(190,30,45,0.2)" />
-                    <circle cx="160" cy="160" r="6"   fill="rgba(190,30,45,0.4)" />
+                    <circle cx="160" cy="160" r="85" stroke="rgba(190,30,45,0.08)" strokeWidth="1" />
+                    <circle cx="160" cy="160" r="50" stroke="rgba(190,30,45,0.12)" strokeWidth="1.5" />
+                    <circle cx="160" cy="160" r="12" fill="rgba(190,30,45,0.2)" />
+                    <circle cx="160" cy="160" r="6" fill="rgba(190,30,45,0.4)" />
                 </svg>
             </div>
 
@@ -311,47 +276,19 @@ export default function Process() {
                 </div>
 
                 {/* Steps Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-6 md:gap-x-5 relative">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-4 md:gap-y-6 md:gap-x-5 relative items-stretch">
 
-                    {/* Connecting line desktop — animated */}
-                    <div className="hidden lg:block absolute top-[40px] left-0 right-0 h-[1px] z-0 overflow-hidden">
-                        <div
-                            className="h-full"
-                            style={{
-                                background: 'linear-gradient(90deg, rgba(190,30,45,0.4) 0%, rgba(190,30,45,0.2) 60%, transparent 100%)',
-                                width: visible ? '100%' : '0%',
-                                transition: 'width 1.4s cubic-bezier(0.23, 1, 0.32, 1) 0.6s',
-                            }}
-                        />
-                    </div>
 
                     {steps.map((s) => (
                         <div
                             key={s.step}
+                            className="h-full"
                             style={{
                                 opacity: visible ? undefined : 0,
                                 animationPlayState: visible ? 'running' : 'paused',
+                                animationDelay: s.delay,
                             }}
                         >
-                            {/* Desktop dot on timeline */}
-                            <div
-                                className="hidden lg:flex items-center justify-start mb-10 relative z-10"
-                            >
-                                <div
-                                    className="w-4 h-4 rounded-full border-2 border-cherry bg-cream transition-all duration-500"
-                                    style={{
-                                        boxShadow: '0 0 0 0 rgba(190,30,45,0.4)',
-                                        animation: visible ? 'pulseRing 2.5s ease-out infinite' : 'none',
-                                        animationDelay: s.animDelay,
-                                    }}
-                                />
-                            </div>
-
-                            {/* Mobile vertical line */}
-                            <div className="md:hidden flex justify-center mb-4">
-                                <div className="w-[2px] h-6 bg-cherry" />
-                            </div>
-
                             <StepCard {...s} />
                         </div>
                     ))}
