@@ -19,7 +19,7 @@ function TurntablePanel({
     const PIVOT_Y = 12
 
     return (
-        <div className={`relative w-full h-full flex items-center ${flip ? 'justify-start lg:pl-2' : 'justify-end lg:pr-2'}`}>
+        <div className={`relative w-full h-full flex items-center justify-center ${flip ? 'lg:justify-start lg:pl-2' : 'lg:justify-end lg:pr-2'}`}>
             <div className="relative flex-shrink-0" style={{ width: PLATTER, height: PLATTER }}>
 
                 {/* Platter rings */}
@@ -192,7 +192,7 @@ export default function Tracklist() {
                 <div className="space-y-16 lg:space-y-24">
 
                     {/* Track 01 */}
-                    <article className={`track-card group relative grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-visible mx-4 md:mx-0${activeCard === 1 ? ' is-active' : ''}`}>
+                    <article className={`track-card group relative grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-visible mx-0 md:mx-0${activeCard === 1 ? ' is-active' : ''}`}>
                         <div className="fi relative bg-ink/[0.02] p-8 md:p-10 flex flex-col justify-between min-h-[350px] z-20 gatefold-shadow paper-texture border border-black/5 lg:border-r-0">
                             <div className="liner-notes-grid absolute inset-0 pointer-events-none"></div>
                             <div className="relative">
@@ -221,14 +221,14 @@ export default function Tracklist() {
                                 <MobilePlayButton isPlaying={activeCard === 1} onToggle={() => toggle(1)} />
                             </div>
                         </div>
-                        <div className="fi relative bg-ink/[0.01] overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-l-0 gatefold-shadow-reverse border-t-0 lg:border-t p-8">
+                        <div className="fi relative bg-ink/[0.01] overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-l-0 gatefold-shadow-reverse border-t-0 lg:border-t p-4 md:p-8">
                             <div className="absolute inset-0 paper-texture opacity-30 pointer-events-none mix-blend-multiply"></div>
                             <TurntablePanel speed={10} flip={false} />
                         </div>
                     </article>
 
                     {/* Track 02 */}
-                    <article className={`track-card group relative grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-visible mx-4 md:mx-0${activeCard === 2 ? ' is-active' : ''}`}>
+                    <article className={`track-card group relative grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-visible mx-0 md:mx-0${activeCard === 2 ? ' is-active' : ''}`}>
                         <div className="fi relative bg-ink/[0.02] p-8 md:p-10 flex flex-col justify-between min-h-[350px] z-20 gatefold-shadow paper-texture border border-black/5 lg:border-r-0 lg:order-2 gatefold-shadow-reverse">
                             <div className="liner-notes-grid absolute inset-0 pointer-events-none"></div>
                             <div className="relative">
@@ -257,14 +257,14 @@ export default function Tracklist() {
                                 <MobilePlayButton isPlaying={activeCard === 2} onToggle={() => toggle(2)} />
                             </div>
                         </div>
-                        <div className="fi relative bg-ink/[0.01] overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-r-0 gatefold-shadow border-t-0 p-8 lg:order-1 lg:border-t">
+                        <div className="fi relative bg-ink/[0.01] overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-r-0 gatefold-shadow border-t-0 p-4 md:p-8 lg:order-1 lg:border-t">
                             <div className="absolute inset-0 paper-texture opacity-30 pointer-events-none mix-blend-multiply"></div>
                             <TurntablePanel speed={16} flip={true} />
                         </div>
                     </article>
 
                     {/* Track 03 */}
-                    <article className={`track-card group relative grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-visible mx-4 md:mx-0${activeCard === 3 ? ' is-active' : ''}`}>
+                    <article className={`track-card group relative grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-visible mx-0 md:mx-0${activeCard === 3 ? ' is-active' : ''}`}>
                         <div className="fi relative bg-ink/[0.02] p-8 md:p-10 flex flex-col justify-between min-h-[350px] z-20 gatefold-shadow paper-texture border border-black/5 lg:border-r-0">
                             <div className="liner-notes-grid absolute inset-0 pointer-events-none"></div>
                             <div className="relative">
@@ -293,7 +293,7 @@ export default function Tracklist() {
                                 <MobilePlayButton isPlaying={activeCard === 3} onToggle={() => toggle(3)} />
                             </div>
                         </div>
-                        <div className="fi relative bg-ink/[0.01] overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-l-0 gatefold-shadow-reverse border-t-0 p-8 lg:border-t">
+                        <div className="fi relative bg-ink/[0.01] overflow-hidden min-h-[300px] lg:min-h-full border border-black/5 lg:border-l-0 gatefold-shadow-reverse border-t-0 p-4 md:p-8 lg:border-t">
                             <div className="absolute inset-0 paper-texture opacity-30 pointer-events-none mix-blend-multiply"></div>
                             <TurntablePanel speed={12} flip={false} />
                         </div>
